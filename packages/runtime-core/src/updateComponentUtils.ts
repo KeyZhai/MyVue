@@ -1,0 +1,11 @@
+export function shouldUpdateComponent(preVnode, nextVnode) {
+  const { props: preProps } = preVnode
+  const { props: nextProps } = nextVnode
+  for (const key in nextProps) {
+    if (nextProps[key] !== preProps[key]) {
+      return true
+    } else {
+      return false
+    }
+  }
+}
