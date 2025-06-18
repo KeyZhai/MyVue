@@ -27,6 +27,7 @@ export const capitalize = (str: string) => {
 }
 
 export const toHandlerKey = (str: string) => {
+  // 进行判断，如果str存在，那么返回on + 首字母大写的str
   return str ? 'on' + capitalize(str) : ''
 }
 

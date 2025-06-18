@@ -2,12 +2,16 @@ import { track, trigger } from './effect'
 import { reactive, ReactiveFlags,readonly } from './reactive'
 import { isObject,extend } from '@my-vue/shared'
 
+//普通响应式getter和setter
 const get = createGetter()
 const set = createSetter()
+//只读响应式getter
 const readonlyGet = createGetter(true)
+//浅层响应式getter
 const shallowReadonlyGet = createGetter(true, true)
 
 function createGetter(isReadonly = false, shallow = false) {
+  //调用reactive包裹的对象身上的属性时，就在调用下面的get方法
   return function get(target, key) {
     if (key === ReactiveFlags.IS_REACTIVE) {
       return !isReadonly
@@ -15,6 +19,7 @@ function createGetter(isReadonly = false, shallow = false) {
     if (key === ReactiveFlags.IS_READONLY) {
       return isReadonly
     }
+    //获取原始值
     const res = Reflect.get(target, key)
     if (shallow) {
       return res
@@ -33,13 +38,13 @@ function createGetter(isReadonly = false, shallow = false) {
 function createSetter() {
   return function set(target, key, value) {
     const res = Reflect.set(target, key, value)
-    // 收集依赖
+    // 触发依赖
     trigger(target, key)
     return res
   }
 }
 
-export const reactiveHandlers = {
+export const  reactiveHandlers = {
   get,
   set,
 }

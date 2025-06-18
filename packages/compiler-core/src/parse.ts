@@ -49,6 +49,8 @@ function isEnd(context, ancestors) {
   return !s
 }
 
+//<div><p>hi</p><span>{{message}}</div>
+
 function parseElement(context, ancestors) {
   //处理开始标签
   const element: any = parserTag(context, TagType.Start)
@@ -79,7 +81,9 @@ function parserTag(context, tagType) {
   const match: any = /^<\/?([a-z]*)/i.exec(context.source)
   const tag = match[1]
   // 2.删除处理完成的代码
+  //删除<div
   advanceBy(context, match[0].length)
+  //删除>
   advanceBy(context, 1)
   if (tagType === TagType.Start) {
     return {
@@ -110,6 +114,7 @@ function parseText(context) {
 
 function parseTextData(context, length) {
   const content = context.source.slice(0, length)
+  //把message切掉
   advanceBy(context, length)
   return content
 }
@@ -125,12 +130,13 @@ function parseInterpolation(context) {
   )
   //切掉前两个{{
   advanceBy(context, closeDelimiter.length)
+  //得到message的长度
   const rawContentLength = closeIndex - closeDelimiter.length
   // 得到message
   const rawContent = parseTextData(context, rawContentLength)
   // 去掉空格
   const content = rawContent.trim()
-  // 清空context.source，方便解析后面的内容
+  // 再把}}切掉，清空context.source，方便解析后面的内容
   advanceBy(context, closeDelimiter.length)
 
   return {

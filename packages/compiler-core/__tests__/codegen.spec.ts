@@ -26,7 +26,7 @@ describe("codegen", () => {
     expect(code).toMatchSnapshot();
   });
 
-  it("compound_expression", () => {
+  it.only("compound_expression", () => {
     const ast: any = baseParse("<div>hi,{{message}}</div>");
     transform(ast, {
       nodeTransforms: [transformExpression, transformElement, transformText],

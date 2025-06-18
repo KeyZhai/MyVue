@@ -1,11 +1,10 @@
-import { publicInstanceProxyHandlers } from './componentPublicInstance'
-import { initProps } from './componentProps'
-import { initSlots } from './componentSlots'
-import { shallowReadonly,proxyRefs } from '@my-vue/reactivity'
-import { emit } from './componentEmit'
+import { publicInstanceProxyHandlers } from "./componentPublicInstance";
+import { initProps } from "./componentProps";
+import { initSlots } from "./componentSlots";
+import { shallowReadonly, proxyRefs } from "@my-vue/reactivity";
+import { emit } from "./componentEmit";
 
-export function createComponentInstance(vnode, parent) {
-  console.log('parent:', parent)
+export function  createComponentInstance(vnode, parent) {
   // component 组件实例
   const component = {
     vnode,
@@ -26,73 +25,86 @@ export function createComponentInstance(vnode, parent) {
     provides: parent ? parent.provides : {},
     isMounted: false,
     emit: () => {},
-  }
+  };
   // onAdd作为props传递给Foo组件
-  component.emit = emit.bind(null, component) as any
-  return component
+  component.emit = emit.bind(null, component) as any;
+  return component;
 }
 
 export function setupComponent(instance) {
-  initProps(instance, instance.vnode.props)
-  initSlots(instance, instance.vnode.children)
+  /*
+    vnode:{
+      type:Foo,
+      props:{
+        count:1
+      }
+    }
+    instance: {
+     vnode:vnode,
+     type:Foo,
+    }
+  */
+  initProps(instance, instance.vnode.props); //instance.props = instance.vnode.props
+  initSlots(instance, instance.vnode.children);
   // setupStatefulComponent 初始化有状态的component
-  setupStatefulComponent(instance)
+  setupStatefulComponent(instance);
 }
 
 function setupStatefulComponent(instance) {
-  const Component = instance.type
+  //instance.type === vnode.type
+  const Component = instance.type;
   //代理proxy
-  instance.proxy = new Proxy({ _: instance }, publicInstanceProxyHandlers)
+  instance.proxy = new Proxy({ _: instance }, publicInstanceProxyHandlers);
 
-  const { setup } = Component
+  const { setup } = Component;
   if (setup) {
-    setCurrentInstance(instance)
+    setCurrentInstance(instance); //currentInstance = instance
     //Function Object
     // 执行Foo中的setup函数，将props和emit传进去
+    //如果返回的是一个对象，会把对象注入到组件上下文中
     const setupResult = setup(shallowReadonly(instance.props), {
       // 把emit挂载到foo的实例上
       emit: instance.emit,
-    })
-    currentInstance = null
+    });
+    currentInstance = null;
     // console.log(setupResult)
-    handleSetupResult(instance, setupResult)
+    handleSetupResult(instance, setupResult);
   }
 }
 
 function handleSetupResult(instance, setupResult) {
   // setupResult 可能是对象，也可能是函数
   // 如果是对象，直接合并到组件实例的setupState上
-  if (typeof setupResult == 'object') {
+  if (typeof setupResult == "object") {
     // setupState是包含着数据的对象
     // 如果是ref对象，用proxyRefs包裹可以最直接获取.value
-    instance.setupState = proxyRefs(setupResult)
+    instance.setupState = proxyRefs(setupResult);
   }
-
-  finishComponentSetup(instance)
+  finishComponentSetup(instance);
 }
 
 function finishComponentSetup(instance) {
-  const Component = instance.type
+  const Component = instance.type;
   if (compiler && !Component.render) {
     if (Component.template) {
-      Component.render = compiler(Component.template)
+      Component.render = compiler(Component.template);
     }
   }
   //template
   if (Component.render) {
-    instance.render = Component.render
+    instance.render = Component.render;
   }
 }
 
-let currentInstance = null
+let currentInstance = null;
 export function getCurrentInstance() {
-  return currentInstance
+  return currentInstance;
 }
 export function setCurrentInstance(instance) {
-  currentInstance = instance
+  currentInstance = instance;
 }
 
-let compiler
+let compiler;
 export function registerRuntimeCompiler(_compiler) {
-  compiler = _compiler
+  compiler = _compiler;
 }

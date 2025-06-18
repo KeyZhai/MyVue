@@ -10,6 +10,7 @@ export const enum ReactiveFlags {
 }
 // 实现reactive
 export function reactive(raw) {
+  //reactiveHandlers可读可写
   return createActiveObject(raw, reactiveHandlers)
 }
 // 实现readonly

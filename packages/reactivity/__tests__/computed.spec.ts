@@ -26,9 +26,10 @@ describe("computed", () => {
     // lazy,如果不调用.value，getter不会执行
     expect(getter).not.toHaveBeenCalled();
     // 调用.value，getter执行
+    //将dirty设置为false，实现缓存
     expect(cValue.value).toBe(1);
     expect(getter).toHaveBeenCalledTimes(1);
-    // 不会重新执行getter
+    // 不会重新执行getter，直接返回缓存的值
     cValue.value;
     expect(getter).toHaveBeenCalledTimes(1);
     value.foo = 2;

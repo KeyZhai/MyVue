@@ -37,6 +37,7 @@ function createRootCodegen(root) {
 
 //抽离出变动点和稳定点
 function traverseNode(node, context) {
+  console.log('node', node)
   const nodeTransforms = context.nodeTransforms
   const exitFns: any = []
   for (let i = 0; i < nodeTransforms.length; i++) {
@@ -46,7 +47,7 @@ function traverseNode(node, context) {
       exitFns.push(onExist)
     }
   }
-
+  console.log('exitFns', exitFns)
   switch (node.type) {
     case NodeTypes.INTERPOLATION:
       context.helper(To_DISPLAY_STRING)
@@ -61,12 +62,13 @@ function traverseNode(node, context) {
     default:
       break
   }
-
+  console.log('exitFns after', exitFns)
   //反向执行，使得plugin先注册的后执行
   let i = exitFns.length
   while (i--) {
     exitFns[i]()
   }
+  console.log('node', node)
 }
 
 function traverseChildren(node, context) {

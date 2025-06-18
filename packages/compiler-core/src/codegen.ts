@@ -43,7 +43,7 @@ function createCodegenContext() {
   return context
 }
 
-function getFunctionPremble(ast, context) {
+function  getFunctionPremble(ast, context) {
   const { push } = context
   const VueBinging = 'Vue'
   const aliasHelper = (s) => `${helperNameMap[s]}:_${helperNameMap[s]}`
@@ -51,7 +51,7 @@ function getFunctionPremble(ast, context) {
     push(`const {${ast.helpers.map(aliasHelper).join(', ')}} = ${VueBinging}`)
   }
   push('\n')
-  push('return ')
+  push('return ') 
 }
 
 function genNode(node, context) {
@@ -66,7 +66,7 @@ function genNode(node, context) {
       break
     case NodeTypes.SIMPLE_EXPRESSION:
       //simple expression
-      genSimpleExpression(node, context)
+      genSimpleExpression(node, context) 
       break
     case NodeTypes.ELEMENT:
       genElement(node, context)
