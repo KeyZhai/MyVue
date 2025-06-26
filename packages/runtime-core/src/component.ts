@@ -44,16 +44,20 @@ export function setupComponent(instance) {
      type:Foo,
     }
   */
+  //父传子props
   initProps(instance, instance.vnode.props); //instance.props = instance.vnode.props
+  //slots父传子children
   initSlots(instance, instance.vnode.children);
   // setupStatefulComponent 初始化有状态的component
   setupStatefulComponent(instance);
 }
 
+//执行执行的setup
+//挂载props
 function setupStatefulComponent(instance) {
   //instance.type === vnode.type
   const Component = instance.type;
-  //代理proxy
+  //对整个instance做代理proxy
   instance.proxy = new Proxy({ _: instance }, publicInstanceProxyHandlers);
 
   const { setup } = Component;

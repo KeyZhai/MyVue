@@ -21,7 +21,6 @@ export function inject(key, defaultValue) {
   const currentInstance: any = getCurrentInstance()
   if (currentInstance) {
     const parentProvides = currentInstance.parent.provides
-
     if (key in parentProvides) {
       return parentProvides[key]
     } else if (defaultValue) {

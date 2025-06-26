@@ -323,7 +323,7 @@ export function createRenderer(options) {
     });
   }
 
-  function processComponent(n1, n2, container, parentComponent, anchor) {
+  function  processComponent(n1, n2, container, parentComponent, anchor) {
     if (!n1) {
       mountComponent(n2, container, parentComponent, anchor);
     } else {
@@ -351,6 +351,7 @@ export function createRenderer(options) {
     ));
     // 初始化有状态的component
     setupComponent(instance);
+    //响应式，挂载DOM元素
     setupRenderEffect(instance, vnode, container, anchor);
   }
 
@@ -368,15 +369,16 @@ export function createRenderer(options) {
           // 当响应式对象发生改变，重新调用render生成新的虚拟节点树
           //1.通过调用组件实例的render函数生成虚拟dom
           //2.call(proxy,proxy)实现双重绑定 第一个proxy指定render函数内的this指向proxy，第二个proxy中作为参数传入
-          //3.将生成的虚拟dom赋值给instance的subTree，用于后续更新
+          //3.将生成的VnodeTree赋值给instance的subTree，用于后续更新
           const subTree = (instance.subTree = instance.render.call(
             proxy,
             proxy
           ));
-          // 生成新的虚拟节点树后，调用patch，会再次挂载到视图上
+          // 生成新的虚拟节点树后，调用patch，会挂载到视图上
           // 需要拆分，判断什么时候是更新，什么时候是初始化
           patch(null, subTree, container, instance, anchor);
-          // 初始化完成后，将el赋值给vnode，用于后续更新
+          // patch 函数发现新旧VNode都是同一个组件，决定进行更新而不是重新挂载。此时，它需要知道要更新哪个DOM元素
+          // const el = (n2.el = n1.el);从oldVnode上获取el
           vnode.el = subTree.el;
           instance.isMounted = true;
         } else {

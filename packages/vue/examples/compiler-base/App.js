@@ -9,15 +9,14 @@
 //   },
 // };
 
-import { ref } from '../../dist/minivue.esm.js'
+
 // 复杂一点
 // template 包含 element 和 interpolation 
 export default {
-  template: `<p>hi,{{count}}</p>`,
-  setup () {
-    const count = window.count = ref(1)
+  template: `<p>{{msg}}</p>`,
+  setup() {
     return {
-      count,
-    }
+      msg: "vue3 - compiler",
+    };
   },
-}
+};

@@ -8,6 +8,8 @@ export const isObject = (value) => {
   return value !== null && typeof value === 'object'
 }
 
+export const isFunction = (val) => typeof val === 'function'
+
 export const isString = (val) => typeof val === 'string'
 
 export const hasChanged = (value, oldValue) => {
